@@ -113,6 +113,28 @@ The shop's shell works offline once installed; the live Facebook posts still nee
 
 ---
 
+## 6. Promo bar, How-to/FAQ, and Analytics
+
+Open **Manage shop** and you'll find collapsible sections for all of these. Edits preview live and publish the same way (Download `posts.json` → commit to GitHub).
+
+**Promo bar** — the pink banner at the very top. Toggle it on/off, set the message, and optionally add a link. Visitors can dismiss it; it comes back automatically whenever you change the text.
+
+**Shop details** — name, tagline, location, hours, payment, Messenger link, and Page URL are all editable here now, so you don't have to hand-edit `posts.json` anymore.
+
+**How to order** — the numbered steps shown on the page. One line per step.
+
+**FAQ** — add, edit, or remove question/answer pairs. They appear as an accordion next to "How to order."
+
+**Visitor analytics (privacy-friendly)** — uses [GoatCounter](https://www.goatcounter.com), which is free, cookie-free, and doesn't track personal data:
+1. Sign up at goatcounter.com and pick a site code (e.g. `mycheche`).
+2. In Manage → *Visitor analytics*, paste that code (or your full count URL).
+3. Download `posts.json`, commit it, and counts start after the site reloads.
+   Leave it blank and no analytics load at all. (Cloudflare Web Analytics works too if you prefer — it's also free and cookieless.)
+
+**Performance note:** posts now **lazy-load** — each Facebook post only loads as it scrolls into view, so the page opens fast and saves mobile data even with lots of posts.
+
+> Because Manage now edits the whole shop (not just posts), your local draft holds everything until you publish. If you ever hand-edit `posts.json` directly, open Manage → **Discard** to reload the published version on your device.
+
 ## Troubleshooting
 
 - **A post won't show up.** The post must be set to **Public** on Facebook. Private or

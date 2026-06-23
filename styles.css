@@ -401,3 +401,67 @@ body.is-managing .order-edit { display: flex !important; }
 }
 
 :focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; border-radius: 6px; }
+
+/* ============================================================
+   Promo bar
+   ============================================================ */
+.promo-bar { display: none; background: linear-gradient(90deg, var(--berry-deep), var(--berry)); color: #FBEAF0; }
+.promo-bar.is-on { display: block; }
+.promo-inner { display: flex; align-items: center; gap: 12px; padding-block: 9px; }
+.promo-msg { flex: 1; text-align: center; font-size: .9rem; font-weight: 600; }
+.promo-link { color: #fff; text-decoration: underline; cursor: pointer; }
+.promo-close { background: rgba(255,255,255,.18); border: none; color: #fff; width: 26px; height: 26px; border-radius: 50%; font-size: 1.1rem; line-height: 1; flex: none; }
+.promo-close:hover { background: rgba(255,255,255,.32); }
+
+/* ============================================================
+   Lazy-load skeleton
+   ============================================================ */
+.embed-skeleton {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  min-height: 360px; width: 100%; color: var(--ink-faint); font-size: .85rem;
+  background: linear-gradient(100deg, var(--bg-warm) 30%, #fff 50%, var(--bg-warm) 70%);
+  background-size: 200% 100%; animation: shimmer 1.4s infinite linear; border-radius: 12px;
+}
+@keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+.sk-spin { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--line); border-top-color: var(--berry); animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   How to order + FAQ
+   ============================================================ */
+.info { border-top: 1px solid var(--line-soft); background: linear-gradient(180deg, var(--bg) 0%, var(--bg-warm) 100%); }
+.info .wrap { padding-block: clamp(40px, 6vw, 70px); }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: start; }
+.info h2 { font-family: var(--ff-display); font-optical-sizing: auto; font-weight: 600; font-size: clamp(1.7rem, 4vw, 2.3rem); margin: 6px 0 18px; line-height: 1.05; }
+.howto-list { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 16px; }
+.howto-list li { display: flex; gap: 14px; align-items: flex-start; font-size: 1rem; color: var(--ink-soft); }
+.step-n { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .9rem; color: #fff; background: linear-gradient(135deg, var(--berry), var(--clay)); box-shadow: var(--shadow); }
+.faq { background: var(--surface); border: 1px solid var(--line-soft); border-radius: var(--radius-sm); margin-bottom: 10px; box-shadow: var(--shadow); overflow: hidden; }
+.faq summary { cursor: pointer; list-style: none; padding: 15px 18px; font-weight: 600; font-size: .98rem; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq .chev { color: var(--berry); transition: transform .2s ease; font-size: 1.1rem; }
+.faq[open] .chev { transform: rotate(180deg); }
+.faq-a { padding: 0 18px 16px; color: var(--ink-soft); font-size: .94rem; }
+
+@media (max-width: 720px) { .info-grid { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   Manage: collapsible groups, switch, FAQ editor
+   ============================================================ */
+.mgroup { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 12px; background: var(--surface); }
+.mgroup > summary { cursor: pointer; list-style: none; padding: 13px 16px; font-weight: 700; font-size: .92rem; display: flex; align-items: center; justify-content: space-between; }
+.mgroup > summary::-webkit-details-marker { display: none; }
+.mgroup > summary::after { content: "⌄"; color: var(--berry); font-size: 1.1rem; transition: transform .2s; }
+.mgroup[open] > summary::after { transform: rotate(180deg); }
+.mgroup[open] > summary { border-bottom: 1px solid var(--line-soft); }
+.mgroup > *:not(summary) { margin-left: 16px; margin-right: 16px; }
+.mgroup > summary + * { margin-top: 14px; }
+.mgroup > *:last-child { margin-bottom: 16px; }
+.switch { display: flex; align-items: center; gap: 10px; font-size: .9rem; font-weight: 600; cursor: pointer; }
+.switch input { width: 18px; height: 18px; accent-color: var(--berry); }
+.faq-edit { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-bottom: 12px; }
+.faq-edit .fq { grid-column: 1; }
+.faq-edit .fdel { grid-column: 2; grid-row: 1; }
+.faq-edit .fa { grid-column: 1 / -1; min-height: 54px; }
+.faq-edit input, .faq-edit textarea { width: 100%; font-family: inherit; font-size: .9rem; border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; background: var(--bg); color: var(--ink); }
+.faq-edit input:focus, .faq-edit textarea:focus { outline: none; border-color: var(--berry); }

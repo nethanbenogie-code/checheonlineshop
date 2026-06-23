@@ -4,67 +4,39 @@
     "subtitle": "Online Shop",
     "tagline": "Home accessories & beauty finds, hand-picked for your space and your glow. See something you like? Message us to order.",
     "location": "Iligan City, Philippines",
-    "hours": "Open daily · We reply fast on Messenger",
-    "payment": "GCash · Cash on Delivery",
+    "hours": "Open daily \u00b7 We reply fast on Messenger",
+    "payment": "GCash \u00b7 Cash on Delivery",
     "messenger": "https://m.me/61564275938442",
     "pageUrl": "https://www.facebook.com/profile.php?id=61564275938442",
-    "manage": {
-      "passcode": "cheche2026"
+    "manage": { "passcode": "cheche2026" },
+    "promo": {
+      "on": true,
+      "text": "✨ New arrivals every week — message us to reserve yours!",
+      "link": ""
     },
+    "howToOrder": [
+      "Browse the posts below and find what you like.",
+      "Tap “Order this” to open the post, or “Message” to chat with us.",
+      "Send your order on Messenger — we'll confirm the price, payment, and delivery."
+    ],
+    "faqs": [
+      { "q": "How do I pay?", "a": "We accept GCash and Cash on Delivery (COD). We'll share the details when you message us." },
+      { "q": "Do you deliver?", "a": "Yes! Within Iligan City and nationwide via J&T / LBC." },
+      { "q": "How long is shipping?", "a": "Around 2–4 days for nearby areas and 3–7 days for provincial addresses." },
+      { "q": "How do I reserve an item?", "a": "Just message us on Messenger and we'll set it aside for you." }
+    ],
+    "analytics": { "goatcounter": "" },
     "categories": [
-      {
-        "id": "home",
-        "label": "Home Accessories",
-        "color": "#C77D4A"
-      },
-      {
-        "id": "beauty",
-        "label": "Beauty Products",
-        "color": "#B4456B"
-      }
+      { "id": "home", "label": "Home Accessories", "color": "#C77D4A" },
+      { "id": "beauty", "label": "Beauty Products", "color": "#B4456B" }
     ]
   },
   "posts": [
     {
-      "id": "pmqqeco166nuv",
-      "url": "https://www.facebook.com/chehecabalidaonlineshop/posts/pfbid02szS8GtoZ6XDR6a6VgCf27aNj7XkgQHn1QfrC6sobF66hcWsP44zUsmbbksTMRAVhl",
-      "category": "home",
-      "caption": "CLIP FAN MEDIUM BLADE",
-      "addedAt": "2026-06-23T08:42:57.066Z"
-    },
-    {
-      "id": "pmqqeb1kqcsm6",
-      "url": "https://www.facebook.com/chehecabalidaonlineshop/posts/pfbid03145fB6pBQtxUKCooTQcrn7suiRUk9bENt4RuR5YgQqkN8BCeLJELCTRzDPqXG316l",
-      "category": "home",
-      "caption": "B1T1 WOVEN STORAGE BOX WITH COVER SIZE XL",
-      "addedAt": "2026-06-23T08:41:41.306Z"
-    },
-    {
-      "id": "pmqqe9hk0apa9",
-      "url": "https://www.facebook.com/chehecabalidaonlineshop/posts/pfbid032CUqvKh9rync7DmZctXn2fVqewNCnx785hwNBmaZ2dWqsWGHeRuZe6PSjH1wfPyxl",
-      "category": "home",
-      "caption": "40L STORAGE BOX",
-      "addedAt": "2026-06-23T08:40:28.704Z"
-    },
-    {
-      "id": "pmqqatfkfjgpn",
-      "url": "https://www.facebook.com/permalink.php?story_fbid=pfbid0YG2FLMqQ9Rp7HEKm7WRFnxtbzYcbzrSKtsQdAoYxzoBaxF1GrHvdpTkXZeiQuUR3l&id=61564275938442",
-      "category": "home",
-      "caption": "BOTLESS RACK WOODEN TYPE",
-      "addedAt": "2026-06-23T07:04:00.783Z"
-    },
-    {
-      "id": "pmqq91qj2d4d3",
-      "url": "https://www.facebook.com/permalink.php?story_fbid=pfbid02832readZQBWRwnBRXcSAA6evSrtt79Ks83xMLkRH3BMPzGmdM4pYLrBQJDhVHfexl&id=61564275938442",
-      "category": "home",
-      "caption": "",
-      "addedAt": "2026-06-23T06:14:29.006Z"
-    },
-    {
       "id": "sample-1",
       "url": "https://www.facebook.com/permalink.php?story_fbid=pfbid04HpDihMzJdwGSA4YfBRB5EYN3wudoSobqqJAUtDStp4RwyhnVVo92qXWN4bH7mmel&id=61564275938442",
       "category": "home",
-      "caption": "Sample post — open Manage to add your own and tag each one.",
+      "caption": "Sample post \u2014 open Manage to add your own and tag each one.",
       "addedAt": "2026-06-23T00:00:00.000Z"
     }
   ]

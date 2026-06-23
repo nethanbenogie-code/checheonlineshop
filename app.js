@@ -79,21 +79,25 @@
     try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) { return null; }
   }
 
-  /* Shop settings always come fresh from posts.json, so hand-edits to the
-     Messenger link / page URL / info show up right away. Only the post LIST
-     is taken from a saved local draft (your unpublished work in progress). */
+  /* The local draft is your full unpublished working copy (shop + posts).
+     Hand-edits to posts.json show up after you Discard the draft. */
   function loadData() {
     return fetch('posts.json', { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (data) {
-        state.shop = data.shop || fallbackShop();
         var draft = readDraft();
-        if (draft && Array.isArray(draft.posts)) { state.posts = draft.posts.slice(); setDirty(true); }
-        else { state.posts = Array.isArray(data.posts) ? data.posts.slice() : []; }
+        if (draft && draft.shop && Array.isArray(draft.posts)) {
+          state.shop = withDefaults(draft.shop);
+          state.posts = draft.posts.slice();
+          setDirty(true);
+        } else {
+          state.shop = withDefaults(data.shop);
+          state.posts = Array.isArray(data.posts) ? data.posts.slice() : [];
+        }
       })
       .catch(function () {
         var draft = readDraft();
-        state.shop = (draft && draft.shop) || fallbackShop();
+        state.shop = withDefaults((draft && draft.shop) || null);
         state.posts = (draft && draft.posts) || [];
         if (draft && draft.posts) setDirty(true);
         toast('Offline or posts.json missing — showing saved data.');
@@ -111,8 +115,19 @@
     };
   }
 
+  /* Ensure newer fields exist even if an older posts.json/draft lacks them. */
+  function withDefaults(shop) {
+    var s = shop || fallbackShop();
+    if (!s.categories) s.categories = fallbackShop().categories;
+    if (!s.promo) s.promo = { on: false, text: '', link: '' };
+    if (!Array.isArray(s.howToOrder)) s.howToOrder = [];
+    if (!Array.isArray(s.faqs)) s.faqs = [];
+    if (!s.analytics) s.analytics = { goatcounter: '' };
+    return s;
+  }
+
   function apply(data) {
-    state.shop = data.shop || fallbackShop();
+    state.shop = withDefaults(data.shop);
     state.posts = Array.isArray(data.posts) ? data.posts.slice() : [];
   }
 
@@ -138,7 +153,7 @@
     el('metaHours').textContent = s.hours || '';
 
     var mUrl = s.messenger || '#';
-    ['msgHeader', 'msgHero', 'fab', 'footMsg'].forEach(function (id) { el(id).href = mUrl; });
+    ['msgHeader', 'msgHero', 'msgInfo', 'fab', 'footMsg'].forEach(function (id) { var e = el(id); if (e) e.href = mUrl; });
     el('footPage').href = s.pageUrl || '#';
 
     el('footName').textContent = s.name || '';
@@ -150,6 +165,65 @@
 
     renderChips();
     renderCatSelect();
+    renderPromo();
+    renderInfo();
+  }
+
+  /* ---------- promo bar ---------- */
+  var PROMO_DISMISS_KEY = 'cheche_promo_dismissed_v1';
+  function renderPromo() {
+    var p = state.shop.promo || {};
+    var bar = el('promoBar');
+    var dismissed = '';
+    try { dismissed = localStorage.getItem(PROMO_DISMISS_KEY) || ''; } catch (e) {}
+    var show = p.on && p.text && dismissed !== p.text;
+    if (show) {
+      el('promoText').textContent = p.text;
+      var link = normalizeAnyUrl(p.link);
+      var a = el('promoLinkWrap');
+      if (link) { a.href = link; a.style.display = ''; el('promoText').style.display = 'none'; el('promoLinkText').textContent = p.text; }
+      else { a.style.display = 'none'; el('promoText').style.display = ''; }
+      bar.classList.add('is-on');
+      document.body.classList.add('has-promo');
+    } else {
+      bar.classList.remove('is-on');
+      document.body.classList.remove('has-promo');
+    }
+  }
+  function dismissPromo() {
+    try { localStorage.setItem(PROMO_DISMISS_KEY, (state.shop.promo || {}).text || '1'); } catch (e) {}
+    renderPromo();
+  }
+
+  /* ---------- how-to-order + FAQ ---------- */
+  function renderInfo() {
+    var steps = state.shop.howToOrder || [];
+    var faqs = state.shop.faqs || [];
+    var section = el('infoSection');
+    if (!steps.length && !faqs.length) { section.style.display = 'none'; return; }
+    section.style.display = '';
+
+    el('howToList').innerHTML = steps.map(function (s, i) {
+      return '<li><span class="step-n">' + (i + 1) + '</span><span>' + esc(s) + '</span></li>';
+    }).join('');
+    el('howToWrap').style.display = steps.length ? '' : 'none';
+
+    el('faqList').innerHTML = faqs.map(function (f) {
+      return '<details class="faq"><summary>' + esc(f.q || '') +
+        '<span class="chev">⌄</span></summary><div class="faq-a">' + esc(f.a || '') + '</div></details>';
+    }).join('');
+    el('faqWrap').style.display = faqs.length ? '' : 'none';
+  }
+
+  /* Accept any http(s) link for the promo bar (Facebook, external, or in-page #anchor). */
+  function normalizeAnyUrl(raw) {
+    var u = (raw || '').trim();
+    if (!u) return '';
+    if (/^#/.test(u)) return u;
+    if (/^https?:\/\//i.test(u)) return u;
+    if (/^\/\//.test(u)) return 'https:' + u;
+    if (/\./.test(u)) return 'https://' + u;
+    return '';
   }
 
   function renderChips() {
@@ -194,8 +268,8 @@
             '<button class="mini" data-act="del" title="Delete"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2m-9 0 1 14h8l1-14"/></svg></button>' +
           '</span>' +
         '</div>' +
-        '<div class="embed-host">' +
-          (url ? '<div class="fb-post" data-href="' + esc(url) + '" data-width="360" data-show-text="true"></div>' : '') +
+        '<div class="embed-host"' + (url ? ' data-href="' + esc(url) + '"' : '') + '>' +
+          (url ? '<div class="embed-skeleton"><span class="sk-spin"></span><span>Loading post…</span></div>' : '') +
           '<div class="embed-fallback"' + (url ? ' style="display:none"' : '') + '>' +
             (url ? 'Couldn\u2019t load the live post. <a href="' + esc(url) + '" target="_blank" rel="noopener">Open on Facebook ↗</a>'
                  : 'This post is missing its Facebook link. Open <b>Manage shop</b> and edit it.') +
@@ -211,10 +285,11 @@
 
   function renderGrid() {
     var grid = el('grid');
+    if (embedObserver) embedObserver.disconnect();
     grid.innerHTML = state.posts.map(postCard).join('');
     bindCardActions();
     applyFilter();
-    parseEmbeds(grid);
+    observeEmbeds();
   }
 
   function bindCardActions() {
@@ -252,16 +327,57 @@
     el('count').textContent = total ? (shown + ' of ' + total + ' shown') : '';
   }
 
-  /* ---------- Facebook embeds ---------- */
-  function parseEmbeds(root) {
+  /* ---------- Facebook embeds (lazy-loaded) ---------- */
+  function whenFBReady(cb) {
+    var t = 0;
+    (function w() {
+      if (window.FB && window.FB.XFBML) { cb(); return; }
+      if (t++ > 60) return; // ~12s
+      setTimeout(w, 200);
+    })();
+  }
+
+  var embedObserver = null;
+  function observeEmbeds() {
+    var hosts = el('grid').querySelectorAll('.embed-host[data-href]:not([data-loaded])');
+    if (!('IntersectionObserver' in window)) {
+      Array.prototype.forEach.call(hosts, loadEmbed); // no IO support → just load all
+      return;
+    }
+    if (!embedObserver) {
+      embedObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { loadEmbed(e.target); embedObserver.unobserve(e.target); }
+        });
+      }, { root: null, rootMargin: '500px 0px', threshold: 0 });
+    }
+    Array.prototype.forEach.call(hosts, function (h) { embedObserver.observe(h); });
+  }
+
+  function loadEmbed(host) {
+    if (host.getAttribute('data-loaded')) return;
+    host.setAttribute('data-loaded', '1');
+    var href = host.getAttribute('data-href');
+    var post = document.createElement('div');
+    post.className = 'fb-post';
+    post.setAttribute('data-href', href);
+    post.setAttribute('data-width', '360');
+    post.setAttribute('data-show-text', 'true');
+    host.appendChild(post);
+    whenFBReady(function () { try { window.FB.XFBML.parse(host); } catch (e) {} });
+
+    // hide the skeleton once the iframe appears; show fallback if it never does
+    var sk = host.querySelector('.embed-skeleton');
     var tries = 0;
-    (function wait() {
-      if (window.FB && window.FB.XFBML) {
-        try { window.FB.XFBML.parse(root); } catch (e) {}
+    (function check() {
+      if (host.querySelector('iframe')) { if (sk) sk.style.display = 'none'; return; }
+      if (tries++ > 50) {
+        if (sk) sk.style.display = 'none';
+        var fb = host.querySelector('.embed-fallback');
+        if (fb) fb.style.display = 'block';
         return;
       }
-      if (tries++ > 60) return; // ~12s
-      setTimeout(wait, 200);
+      setTimeout(check, 200);
     })();
   }
 
@@ -404,6 +520,85 @@
     el('manageView').hidden = false;
     document.body.classList.add('is-managing');
     renderManageList();
+    bindManageForms();
+  }
+
+  /* ---------- manage: shop details / promo / how-to / FAQ / analytics ---------- */
+  function bindManageForms() {
+    ['name', 'subtitle', 'tagline', 'location', 'hours', 'payment', 'messenger', 'pageUrl'].forEach(function (f) {
+      var inp = el('f_' + f);
+      if (!inp) return;
+      inp.value = state.shop[f] || '';
+      inp.oninput = function () { state.shop[f] = inp.value; saveDraft(); renderShop(); };
+    });
+
+    var promo = state.shop.promo || (state.shop.promo = { on: false, text: '', link: '' });
+    var pon = el('f_promo_on'), ptext = el('f_promo_text'), plink = el('f_promo_link');
+    pon.checked = !!promo.on; ptext.value = promo.text || ''; plink.value = promo.link || '';
+    function promoChanged() {
+      promo.on = pon.checked; promo.text = ptext.value; promo.link = plink.value;
+      try { localStorage.removeItem(PROMO_DISMISS_KEY); } catch (e) {} // owner should see their change
+      saveDraft(); renderPromo();
+    }
+    pon.onchange = promoChanged; ptext.oninput = promoChanged; plink.oninput = promoChanged;
+
+    var hto = el('f_howto');
+    hto.value = (state.shop.howToOrder || []).join('\n');
+    hto.oninput = function () {
+      state.shop.howToOrder = hto.value.split('\n').map(function (x) { return x.trim(); }).filter(Boolean);
+      saveDraft(); renderInfo();
+    };
+
+    var ga = el('f_ga');
+    ga.value = (state.shop.analytics && state.shop.analytics.goatcounter) || '';
+    ga.oninput = function () {
+      if (!state.shop.analytics) state.shop.analytics = {};
+      state.shop.analytics.goatcounter = ga.value.trim();
+      saveDraft();
+    };
+
+    renderFaqEditor();
+  }
+
+  function renderFaqEditor() {
+    var wrap = el('faqEditor');
+    var faqs = state.shop.faqs || (state.shop.faqs = []);
+    if (!faqs.length) { wrap.innerHTML = '<p style="color:var(--ink-faint);font-size:.85rem">No FAQs yet — add one below.</p>'; return; }
+    wrap.innerHTML = faqs.map(function (f, i) {
+      return '<div class="faq-edit" data-i="' + i + '">' +
+        '<input class="fq" placeholder="Question" value="' + esc(f.q || '') + '">' +
+        '<button class="icon-btn fdel" title="Remove">✕</button>' +
+        '<textarea class="fa" placeholder="Answer">' + esc(f.a || '') + '</textarea>' +
+      '</div>';
+    }).join('');
+    Array.prototype.forEach.call(wrap.querySelectorAll('.faq-edit'), function (row) {
+      var i = +row.getAttribute('data-i');
+      row.querySelector('.fq').oninput = function (e) { faqs[i].q = e.target.value; saveDraft(); renderInfo(); };
+      row.querySelector('.fa').oninput = function (e) { faqs[i].a = e.target.value; saveDraft(); renderInfo(); };
+      row.querySelector('.fdel').onclick = function () { faqs.splice(i, 1); saveDraft(); renderFaqEditor(); renderInfo(); };
+    });
+  }
+  function addFaq() {
+    (state.shop.faqs || (state.shop.faqs = [])).push({ q: '', a: '' });
+    saveDraft(); renderFaqEditor(); renderInfo();
+  }
+
+  /* ---------- privacy-friendly analytics (GoatCounter, optional) ---------- */
+  function setupAnalytics() {
+    var code = ((state.shop.analytics && state.shop.analytics.goatcounter) || '').trim();
+    if (!code) return;
+    var endpoint;
+    if (/goatcounter\.com/i.test(code)) {
+      endpoint = /^https?:\/\//i.test(code) ? code : 'https://' + code;
+      if (!/\/count\/?$/.test(endpoint)) endpoint = endpoint.replace(/\/+$/, '') + '/count';
+    } else {
+      endpoint = 'https://' + code.replace(/[^a-z0-9-]/gi, '') + '.goatcounter.com/count';
+    }
+    var sc = document.createElement('script');
+    sc.async = true;
+    sc.src = 'https://gc.zgo.at/count.js';
+    sc.setAttribute('data-goatcounter', endpoint);
+    document.body.appendChild(sc);
   }
 
   /* ---------- PWA: install + service worker ---------- */
@@ -451,6 +646,8 @@
     el('unlockBtn').addEventListener('click', function () { unlock(false); });
     el('pass').addEventListener('keydown', function (e) { if (e.key === 'Enter') unlock(false); });
     el('addBtn').addEventListener('click', addOrSavePost);
+    el('addFaqBtn').addEventListener('click', addFaq);
+    el('promoClose').addEventListener('click', dismissPromo);
     el('downloadBtn').addEventListener('click', downloadJSON);
     el('copyBtn').addEventListener('click', copyJSON);
     el('importBtn').addEventListener('click', importJSON);
@@ -463,5 +660,6 @@
     renderGrid();
     bindEvents();
     setupPWA();
+    setupAnalytics();
   });
 })();
