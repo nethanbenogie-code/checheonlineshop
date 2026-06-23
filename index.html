@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Cheche Cabalida Online Shop — Home Accessories & Beauty</title>
+  <meta name="description" content="Home accessories and beauty products from Cheche Cabalida, Iligan City. Browse our latest finds and message us to order." />
+  <meta name="theme-color" content="#7A2E47" />
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" href="icons/favicon-32.png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Cheche Shop" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Cheche Cabalida Online Shop" />
+  <meta property="og:description" content="Home accessories & beauty finds. Message us to order." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="fb-root"></div>
+
+  <!-- ===== Header ===== -->
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="./" aria-label="Cheche Cabalida home">
+        <img class="brand-mark" src="icons/icon-192.png" alt="" width="38" height="38" />
+        <span class="brand-name" id="brandName">Cheche Cabalida<span>Online Shop</span></span>
+      </a>
+      <div class="header-actions">
+        <button class="btn btn-ghost btn-sm btn-install" id="installBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 21h14"/></svg>
+          <span class="label-full">Install app</span>
+        </button>
+        <a class="btn btn-msg btn-sm" id="msgHeader" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.3 2 2 6.2 2 11.6c0 2.9 1.3 5.5 3.4 7.2v3.5l3.2-1.8c.9.3 1.9.4 2.9.4 5.7 0 10-4.2 10-9.6S17.7 2 12 2Zm1 12.9-2.6-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.3 5.7Z"/></svg>
+          <span class="label-full">Message us</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-inner">
+        <p class="eyebrow" id="heroEyebrow">Iligan City · Online Shop</p>
+        <h1>Cheche <span class="glow">Cabalida</span></h1>
+        <p class="lede" id="heroTagline">Loading…</p>
+        <div class="hero-cta">
+          <a class="btn btn-msg" id="msgHero" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.3 2 2 6.2 2 11.6c0 2.9 1.3 5.5 3.4 7.2v3.5l3.2-1.8c.9.3 1.9.4 2.9.4 5.7 0 10-4.2 10-9.6S17.7 2 12 2Zm1 12.9-2.6-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.3 5.7Z"/></svg>
+            Message us to order
+          </a>
+          <a class="btn btn-ghost" href="#shop">Browse the shop ↓</a>
+        </div>
+        <div class="hero-meta">
+          <span><span class="dot">◆</span> <b id="metaLocation">Iligan City</b></span>
+          <span><span class="dot">◆</span> <b id="metaPayment">GCash · COD</b></span>
+          <span><span class="dot">◆</span> <span id="metaHours">We reply fast on Messenger</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Category bar ===== -->
+  <nav class="shelf" id="shop" aria-label="Browse by category">
+    <div class="wrap">
+      <div class="chips" id="chips"><!-- chips injected --></div>
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="searchInput" type="search" placeholder="Search posts…" aria-label="Search posts" />
+      </div>
+      <span class="count" id="count"></span>
+    </div>
+  </nav>
+
+  <!-- ===== Posts ===== -->
+  <main>
+    <div class="wrap">
+      <div class="grid" id="grid"><!-- cards injected --></div>
+      <div class="empty is-hidden" id="empty">
+        <h3>Nothing here yet</h3>
+        <p>No posts match this view. Try another category or clear your search.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="col">
+        <h4 id="footName">Cheche Cabalida</h4>
+        <p id="footTagline" style="color:#E8C7D2;max-width:32ch;font-size:.95rem"></p>
+      </div>
+      <div class="col">
+        <h5>Visit us</h5>
+        <ul>
+          <li><a id="footPage" href="#" target="_blank" rel="noopener">Facebook Page ↗</a></li>
+          <li><a id="footMsg" href="#" target="_blank" rel="noopener">Message on Messenger ↗</a></li>
+        </ul>
+      </div>
+      <div class="col">
+        <h5>Good to know</h5>
+        <ul>
+          <li id="footLocation">Iligan City, Philippines</li>
+          <li id="footPayment">GCash · Cash on Delivery</li>
+          <li id="footHours">Open daily</li>
+        </ul>
+      </div>
+      <div class="fine">
+        <span>© <span id="year"></span> Cheche Cabalida Online Shop · Built by Gieo Software</span>
+        <button class="manage-link" id="manageOpen" type="button">Manage shop</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating Messenger button (mobile) -->
+  <a class="fab" id="fab" href="#" target="_blank" rel="noopener" aria-label="Message us on Messenger">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.3 2 2 6.2 2 11.6c0 2.9 1.3 5.5 3.4 7.2v3.5l3.2-1.8c.9.3 1.9.4 2.9.4 5.7 0 10-4.2 10-9.6S17.7 2 12 2Zm1 12.9-2.6-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.3 5.7Z"/></svg>
+  </a>
+
+  <!-- ===== Manage modal ===== -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <h3 id="modalTitle">Manage shop</h3>
+        <button class="close" id="modalClose" aria-label="Close">×</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Lock screen -->
+        <div id="lockView">
+          <p class="notice">Enter your passcode to add and organize posts. This is light protection for casual visitors only — anyone can see the code in the files, so don't store anything secret here.</p>
+          <div class="field">
+            <label for="pass">Passcode</label>
+            <input id="pass" type="password" placeholder="Enter passcode" autocomplete="off" />
+          </div>
+          <button class="btn btn-primary" id="unlockBtn" type="button">Unlock</button>
+        </div>
+
+        <!-- Manager -->
+        <div id="manageView" hidden>
+          <div class="dirty-banner" id="dirtyBanner">
+            <span><b>Unpublished changes.</b> Download <code>posts.json</code> and commit it to GitHub to publish.</span>
+            <button class="btn btn-ghost btn-sm" id="discardBtn" type="button">Discard</button>
+          </div>
+
+          <p class="subhead">Add a post</p>
+          <div class="field">
+            <label for="postUrl">Facebook post link or embed code</label>
+            <textarea id="postUrl" placeholder="Paste the post's link (…/permalink.php?…) or the full Facebook embed &lt;iframe&gt; code"></textarea>
+            <p class="hint">On Facebook: open the post → ••• → <b>Embed</b> → copy. Or copy the post's link. Either works.</p>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="postCat">Category</label>
+              <select id="postCat"></select>
+            </div>
+            <div class="field">
+              <label for="postCap">Short caption (optional)</label>
+              <input id="postCap" type="text" placeholder="e.g. Rattan organizer set" />
+            </div>
+          </div>
+          <button class="btn btn-primary" id="addBtn" type="button">Add post</button>
+
+          <div class="divider"></div>
+
+          <p class="subhead">Posts <span id="manageCount" style="color:var(--ink-faint)"></span></p>
+          <div class="manage-list" id="manageList"></div>
+
+          <div class="divider"></div>
+
+          <p class="subhead">Publish</p>
+          <p class="notice">Your changes are saved on this device as you work. To make them live for everyone, <b>download posts.json</b> and upload (commit) it to your GitHub repository.</p>
+          <div class="row">
+            <button class="btn btn-primary" id="downloadBtn" type="button">Download posts.json</button>
+            <button class="btn btn-ghost" id="copyBtn" type="button">Copy JSON</button>
+          </div>
+          <div class="field" style="margin-top:16px">
+            <label for="importBox">Import / paste posts.json</label>
+            <textarea id="importBox" placeholder="Paste a posts.json here to load it"></textarea>
+            <div class="row" style="margin-top:8px">
+              <button class="btn btn-ghost btn-sm" id="importBtn" type="button">Load pasted JSON</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-host" id="toasts"></div>
+
+  <!-- Facebook SDK -->
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=0&version=v25.0"></script>
+  <script src="app.js"></script>
+</body>
+</html>
