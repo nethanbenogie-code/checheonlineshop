@@ -49,6 +49,25 @@
     return raw.replace(/^["'\s]+|["'\s]+$/g, '');
   }
 
+  /* Turn whatever was pasted into a SAFE, absolute Facebook URL.
+     Returns '' if it isn't a recognizable Facebook link, so a bad value
+     can never become a relative link that navigates back into the site. */
+  function normalizeFbUrl(raw) {
+    var u = extractHref(raw);
+    if (!u) return '';
+    u = u.replace(/\s+/g, '');
+    if (/^https?:\/\//i.test(u)) {
+      // already absolute — accept only if it points at Facebook
+      return /facebook\.com|fb\.(com|watch|me)|^https?:\/\/m\.me/i.test(u) ? u : '';
+    }
+    if (/^\/\//.test(u)) return 'https:' + u;
+    if (/^(www\.|m\.|web\.|mbasic\.)?facebook\.com/i.test(u) ||
+        /^fb\.(com|watch|me)/i.test(u) || /^m\.me/i.test(u)) {
+      return 'https://' + u;
+    }
+    return '';
+  }
+
   function categoryById(id) {
     var cats = (state.shop && state.shop.categories) || [];
     for (var i = 0; i < cats.length; i++) if (cats[i].id === id) return cats[i];
@@ -163,8 +182,9 @@
   /* ---------- render: post grid ---------- */
   function postCard(p) {
     var cat = categoryById(p.category);
-    var url = extractHref(p.url);
+    var url = normalizeFbUrl(p.url);
     var mUrl = state.shop.messenger || '#';
+    var orderHref = url || state.shop.pageUrl || mUrl || '#';
     return '' +
       '<article class="card" data-cat="' + esc(cat.id) + '" data-id="' + esc(p.id) + '" data-cap="' + esc((p.caption || '') + ' ' + url) + '">' +
         '<div class="card-ribbon">' +
@@ -175,12 +195,15 @@
           '</span>' +
         '</div>' +
         '<div class="embed-host">' +
-          '<div class="fb-post" data-href="' + esc(url) + '" data-width="360" data-show-text="true"></div>' +
-          '<div class="embed-fallback" style="display:none">Couldn\u2019t load the live post. <a href="' + esc(url) + '" target="_blank" rel="noopener">Open on Facebook ↗</a></div>' +
+          (url ? '<div class="fb-post" data-href="' + esc(url) + '" data-width="360" data-show-text="true"></div>' : '') +
+          '<div class="embed-fallback"' + (url ? ' style="display:none"' : '') + '>' +
+            (url ? 'Couldn\u2019t load the live post. <a href="' + esc(url) + '" target="_blank" rel="noopener">Open on Facebook ↗</a>'
+                 : 'This post is missing its Facebook link. Open <b>Manage shop</b> and edit it.') +
+          '</div>' +
         '</div>' +
         (p.caption ? '<p class="card-caption">' + esc(p.caption) + '</p>' : '') +
         '<div class="card-actions">' +
-          '<a class="btn btn-primary btn-sm" href="' + esc(url) + '" target="_blank" rel="noopener">Order this ↗</a>' +
+          '<a class="btn btn-primary btn-sm" href="' + esc(orderHref) + '" target="_blank" rel="noopener">Order this ↗</a>' +
           '<a class="btn btn-msg btn-sm" href="' + esc(mUrl) + '" target="_blank" rel="noopener" title="Message us on Messenger">Message ↗</a>' +
         '</div>' +
       '</article>';
@@ -245,8 +268,8 @@
   /* ---------- manage: add / edit / delete / reorder ---------- */
   function addOrSavePost() {
     var raw = el('postUrl').value;
-    var url = extractHref(raw);
-    if (!/facebook\.com/i.test(url)) { toast('Please paste a valid Facebook post link or embed.'); return; }
+    var url = normalizeFbUrl(raw);
+    if (!url) { toast('That doesn’t look like a Facebook post link. Copy the post’s link, or its ••• → Embed code.'); return; }
     var cat = el('postCat').value;
     var cap = el('postCap').value.trim();
 
@@ -308,7 +331,7 @@
       var cap = p.caption || '(no caption)';
       return '<div class="manage-item" data-cat="' + esc(cat.id) + '" data-id="' + esc(p.id) + '">' +
         '<span class="tag">' + esc(cat.label.split(' ')[0]) + '</span>' +
-        '<span class="meta"><span class="cap">' + esc(cap) + '</span><span class="u">' + esc(extractHref(p.url)) + '</span></span>' +
+        '<span class="meta"><span class="cap">' + esc(cap) + '</span><span class="u">' + esc(normalizeFbUrl(p.url) || '⚠ missing or invalid link — tap edit to fix') + '</span></span>' +
         '<span class="acts">' +
           '<button class="icon-btn" data-m="up" title="Move up"' + (i === 0 ? ' disabled' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg></button>' +
           '<button class="icon-btn" data-m="down" title="Move down"' + (i === state.posts.length - 1 ? ' disabled' : '') + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></button>' +
