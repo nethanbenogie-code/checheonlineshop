@@ -180,8 +180,8 @@
         '</div>' +
         (p.caption ? '<p class="card-caption">' + esc(p.caption) + '</p>' : '') +
         '<div class="card-actions">' +
-          '<a class="btn btn-msg btn-sm" href="' + esc(mUrl) + '" target="_blank" rel="noopener">Order this ↗</a>' +
-          '<a class="btn btn-ghost btn-sm view" href="' + esc(url) + '" target="_blank" rel="noopener" title="View on Facebook">View ↗</a>' +
+          '<a class="btn btn-primary btn-sm" href="' + esc(url) + '" target="_blank" rel="noopener">Order this ↗</a>' +
+          '<a class="btn btn-msg btn-sm" href="' + esc(mUrl) + '" target="_blank" rel="noopener" title="Message us on Messenger">Message ↗</a>' +
         '</div>' +
       '</article>';
   }
